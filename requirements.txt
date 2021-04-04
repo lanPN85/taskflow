@@ -1,0 +1,5 @@
+py3nvml==0.2.6
+fastapi[all]==0.63
+psutil==5.8.0
+loguru==0.5.3
+littletable==1.4.1
