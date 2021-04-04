@@ -3,3 +3,6 @@ fastapi[all]==0.63
 psutil==5.8.0
 loguru==0.5.3
 littletable==1.4.1
+typer==0.3.2
+websockets==8.1
+colorama==0.4.4

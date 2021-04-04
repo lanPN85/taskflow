@@ -1,6 +1,7 @@
 from taskflow.model.ws import ClientUpdateInfo, MessageType, SocketMessage
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from loguru import logger
+from websockets.exceptions import ConnectionClosed
 
 from taskflow import di
 from taskflow.model.task import Task, NewTask
@@ -57,8 +58,14 @@ async def handle_task(
             can_start = await scheduler.wait_for_task_execution(task)
             if can_start:
                 message = SocketMessage(
-                    type=MessageType.TASK_CAN_StART
+                    type=MessageType.TASK_CAN_START
                 )
+                await websocket.send_text(
+                    message.json()
+                )
+                task.is_running = True
+                await db.update_task(task)
+
                 break
 
         # Wait for task finish
@@ -71,8 +78,9 @@ async def handle_task(
                     can_finish = True
             except ValueError:
                 logger.warning("Invalid JSON data")
-        
-    except WebSocketDisconnect:
+
+        await websocket.close()
+    except (WebSocketDisconnect, ConnectionClosed):
         logger.warning("Socket disconnected")
     except ValueError:
         logger.warning("Invalid JSON data")

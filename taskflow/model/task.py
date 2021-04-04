@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from enum import IntEnum
 from typing import Dict, List, Optional
 
@@ -38,7 +38,7 @@ class NewTask(BaseModel):
 
     @staticmethod
     def generate_id() -> str:
-        return str(uuid.uuid4())[:10]
+        return str(uuid.uuid4())[:8]
 
     def to_task(self) -> Task:
         return Task(

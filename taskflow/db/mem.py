@@ -10,7 +10,6 @@ class InMemoryDb(ITaskflowDb):
         super().__init__()
         self.__tasks = Table("tasks")
         self.__tasks.create_index("id", unique=True)
-        self.__tasks.create_index("is_running")
 
     async def get_task_by_id(self, id: str) -> Optional[Task]:
         try:
@@ -25,7 +24,7 @@ class InMemoryDb(ITaskflowDb):
     async def get_running_tasks_count(self) -> int:
         t = await self.get_running_tasks()
         return len(t)
-    
+
     async def get_pending_tasks(self) -> List[Task]:
         return list(self.__tasks.where(
             lambda x: not x.is_running

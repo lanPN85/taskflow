@@ -55,6 +55,8 @@ class TaskScheduler:
 
             for task in sorted_pending_tasks:
                 if self.can_task_run(task):
+                    logger.info(f"Starting task {task.id}")
+
                     # Open the task's lock for it to run
                     task_lock = self.__task_locks.get(task.id)
                     if task_lock is None:
