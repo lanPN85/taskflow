@@ -1,3 +1,6 @@
 asynctest==0.13.0
 pytest==6.2.3
 pytest-cov==2.11.1
+
+# Pyinstaller
+https://github.com/bwoodsend/pyinstaller/archive/5540.zip

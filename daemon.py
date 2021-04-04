@@ -29,6 +29,11 @@ def main():
     else:
         logger.add(sys.stderr, level="INFO")
 
+    if di.nvml_available():
+        logger.info("NVML available")
+    else:
+        logger.info("NVML not available")
+
     app = setup_api(
         debug= is_debug
     )
