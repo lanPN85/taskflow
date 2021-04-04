@@ -16,7 +16,7 @@ from datetime import timedelta
 from taskflow import di
 from taskflow.model.task import NewTask, Task, TaskPriority, TaskResourceUsage
 from taskflow.model.ws import ClientUpdateInfo, SocketMessage, MessageType
-from taskflow.utils import get_timestamp_ms
+from taskflow.utils import get_timestamp_ms, format_bytes
 
 app = typer.Typer()
 
@@ -94,13 +94,16 @@ def run(
             yaml.dump(dout, f)
 
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(start_proc(new_task))
+    loop.run_until_complete(start_proc(
+        new_task, port=di.settings().api_port
+    ))
 
 
 async def start_proc(
-    new_task: NewTask
+    new_task: NewTask,
+    port: int
 ):
-    uri = "ws://localhost:4305/tasks/start"
+    uri = f"ws://localhost:{port}/tasks/start"
 
     async with websockets.connect(uri) as ws:
         try:
@@ -163,6 +166,12 @@ def convert_newtask_to_dict(new_task: NewTask):
     dout = json.loads(new_task.json())
     dout.pop("cmd")
     dout.pop("created_by")
+
+    if dout["usage"].get("memory_bytes") is not None:
+        dout["usage"]["memory_bytes"] = format_bytes(dout["usage"]["memory_bytes"])
+    if dout["usage"].get("gpu_memory_bytes") is not None:
+        for k, v in dout["usage"]["gpu_memory_bytes"].items():
+            dout["usage"]["gpu_memory_bytes"][k] = format_bytes(v)
 
     return dout
 

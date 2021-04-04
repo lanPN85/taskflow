@@ -11,7 +11,7 @@ class TaskflowSettings(BaseModel):
     api_port: int = 4305
     reserved_memory_bytes: int = 100 * (1024**2)  # 100MB
     reserved_gpu_memory_bytes: int = 1 * (1024**2)  # 1MB
-    system_query_interval: float = 5
+    system_query_interval: float = 2
 
     @classmethod
     def from_yaml(cls, f) -> 'TaskflowSettings':
