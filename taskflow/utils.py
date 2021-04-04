@@ -1,5 +1,7 @@
 import time
+import humanfriendly as hf
 
+from typing import Optional
 from py3nvml.py3nvml import NVMLError, nvmlInit
 
 
@@ -16,7 +18,7 @@ def check_has_nvml() -> bool:
 
 
 def format_bytes(b: float) -> str:
-    units = ["B", "KB", "MB", "GB", "TB"]
+    units = ["B", "K", "M", "G", "T"]
     index = 0
     for i in range(len(units) - 1):
         if b < 1024:
@@ -25,3 +27,13 @@ def format_bytes(b: float) -> str:
         index = i + 1
 
     return f"{b:.2f}{units[index]}"
+
+
+def convert_byte_any(b) -> Optional[int]:
+    if b is None or isinstance(b, int):
+        return b
+
+    if isinstance(b, str):
+        return hf.parse_size(b, binary=True)
+
+    raise ValueError("Cannot covert to bytes value")

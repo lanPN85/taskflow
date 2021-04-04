@@ -1,6 +1,8 @@
 import yaml
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
+
+from taskflow.utils import convert_byte_any
 
 
 class TaskflowSettings(BaseModel):
@@ -15,3 +17,7 @@ class TaskflowSettings(BaseModel):
     def from_yaml(cls, f) -> 'TaskflowSettings':
         d = yaml.full_load(f)
         return cls.parse_obj(d)
+
+    @validator("reserved_memory_bytes", "reserved_gpu_memory_bytes", pre=True, always=True)
+    def convert_byte_value(cls, v):
+        return convert_byte_any(v)

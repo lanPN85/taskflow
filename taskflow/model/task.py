@@ -4,7 +4,7 @@ from pydantic import BaseModel, validator
 from enum import IntEnum
 from typing import Dict, List, Optional
 
-from taskflow.utils import get_timestamp_ms
+from taskflow.utils import convert_byte_any, get_timestamp_ms
 
 
 class TaskPriority(IntEnum):
@@ -17,6 +17,9 @@ class TaskResourceUsage(BaseModel):
     memory_bytes: Optional[int] = None
     gpu_memory_bytes: Optional[Dict[str, int]] = None
 
+    @validator("memory_bytes", "gpu_memory_bytes", pre=True, always=True)
+    def convert_byte_value(cls, v):
+        return convert_byte_any(v)
 
 class Task(BaseModel):
     id: str
