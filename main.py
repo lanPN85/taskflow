@@ -67,7 +67,7 @@ def run(
             gpu_memory_usage = {}
             for gs in gpu_usage_strings:
                 gpu_id, usage = gs.split(":")
-                gpu_memory_usage[gpu_id] = hf.parse_size(usage, binary=True)
+                gpu_memory_usage[gpu_id] = usage
 
         new_task = NewTask(
             cmd=cmd,

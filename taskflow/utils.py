@@ -33,6 +33,9 @@ def convert_byte_any(b) -> Optional[int]:
     if b is None or isinstance(b, int):
         return b
 
+    if isinstance(b, float):
+        return int(b)
+    
     if isinstance(b, str):
         return hf.parse_size(b, binary=True)
 
