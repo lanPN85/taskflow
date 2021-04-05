@@ -14,7 +14,7 @@ install:
 	chmod a+x /usr/bin/taskflow
 	chmod a+x /usr/bin/taskflowd
 	mkdir -p /etc/taskflow
-	[ test -f "/etc/taskflow/settings.yml" ] || cp ./etc/default-settings.yml /etc/taskflow/settings.yml
+	# [ test -f "/etc/taskflow/settings.yml" ] || cp ./etc/default-settings.yml /etc/taskflow/settings.yml
 
 TEST_ARGS=--cov=.
 TEST_TARGET=test/
