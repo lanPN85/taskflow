@@ -120,7 +120,7 @@ async def start_proc(
                 data = await ws.recv()
 
                 os.system("clear")
-                typer.secho("Waiting for start signal...", fg="#f0d718")
+                typer.secho("Waiting for start signal...", fg="yellow")
                 typer.echo(f"Task id: {task.id}")
                 typer.secho(task.cmd, bold=True)
                 typer.echo()
@@ -128,7 +128,7 @@ async def start_proc(
                 # Print elapsed time
                 elapsed_ms = get_timestamp_ms() - task.created_at
                 elapsed_td = timedelta(milliseconds=elapsed_ms)
-                typer.echo(f"Elapsed: {hf.format_timespan(elapsed_td)}")
+                typer.secho(f"Wait time: {hf.format_timespan(elapsed_td)}", bold=True)
 
                 message = SocketMessage.parse_obj(json.loads(data))
 
@@ -140,11 +140,11 @@ async def start_proc(
                     info = ClientUpdateInfo.parse_obj(message.data)
                     typer.secho(
                         f"Pending tasks: {info.pending_tasks_count}",
-                        fg="#3fa5f2"
+                        fg="blue"
                     )
                     typer.secho(
                         f"Running tasks: {info.running_tasks_count}",
-                        fg="#3fa5f2"
+                        fg="blue"
                     )
         except KeyboardInterrupt:
             typer.secho("Task cancelled", fg="red")
