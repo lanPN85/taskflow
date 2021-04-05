@@ -6,7 +6,7 @@ dist/taskflow: main.py taskflow/*.py taskflow/**/*.py taskflow.spec
 	pyinstaller taskflow.spec
 
 dist/taskflowd: daemon.py taskflow/*.py taskflow/**/*.py taskflowd.spec
-	pyinstaller taskflow.spec
+	pyinstaller taskflowd.spec
 
 install:
 	cp dist/taskflow /usr/bin/taskflow
