@@ -38,8 +38,14 @@ class Task(BaseModel):
     created_by: str
     priority: TaskPriority
     usage: TaskResourceUsage
+    started_at: Optional[int] = None
     is_running: bool = False
     init_delay_s: int = 5
+
+
+class TaskList(BaseModel):
+    tasks: List[Task]
+    total: int
 
 
 class NewTask(BaseModel):

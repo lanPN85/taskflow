@@ -1,23 +1,33 @@
-from taskflow.model.ws import ClientUpdateInfo, MessageType, SocketMessage
-from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from taskflow.utils import get_timestamp_ms
+from typing import Optional
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect, Query
 from loguru import logger
 from websockets.exceptions import ConnectionClosed
 
 from taskflow import di
-from taskflow.model.task import Task, NewTask
+from taskflow.model.task import Task, NewTask, TaskList
 from taskflow.db.base import ITaskflowDb
 from taskflow.scheduler import TaskScheduler
+from taskflow.model.ws import ClientUpdateInfo, MessageType, SocketMessage
 
 router = APIRouter()
 
 
 @router.get("/search",
-    response_model=Task
+    response_model=TaskList
 )
 async def search_tasks(
-
+    created_by: Optional[str] = Query(None),
+    is_running: Optional[bool] = Query(None),
+    start: int = Query(0),
+    size: int = Query(20),
+    db: ITaskflowDb = Depends(di.db)
 ):
-    pass
+    return await db.search_tasks(
+        created_by=created_by,
+        is_running=is_running,
+        start=start, size=size
+    )
 
 
 @router.websocket("/start")
@@ -63,7 +73,9 @@ async def handle_task(
                 await websocket.send_text(
                     message.json()
                 )
+
                 task.is_running = True
+                task.started_at = get_timestamp_ms()
                 await db.update_task(task)
 
                 break

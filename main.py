@@ -1,4 +1,5 @@
 import os
+from requests.api import head
 import typer
 import getpass
 import websockets
@@ -7,14 +8,16 @@ import json
 import signal
 import yaml
 import humanfriendly as hf
+import requests
+import tabulate
 
 from subprocess import Popen
 from typing import Optional, List
 from multiprocessing import Process
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from taskflow import di
-from taskflow.model.task import NewTask, Task, TaskPriority, TaskResourceUsage
+from taskflow.model.task import NewTask, Task, TaskList, TaskPriority, TaskResourceUsage
 from taskflow.model.ws import ClientUpdateInfo, SocketMessage, MessageType
 from taskflow.utils import get_timestamp_ms, format_bytes
 
@@ -155,19 +158,27 @@ async def start_proc(
         typer.echo(task.cmd)
 
         p = Popen(task.cmd, shell=True, env=os.environ)
+        status = None
         try:
             while True:
-                is_done = p.poll() is not None
+                status = p.poll()
+                is_done = status is not None
                 if is_done:
                     break
+                await asyncio.sleep(0.5)
         except KeyboardInterrupt:
             p.send_signal(signal.SIGTERM)
             p.wait()
 
         # Send finish signal
-        await ws.send(json.dumps({
-            "type": MessageType.TASK_FINISH
-        }))
+        try:
+            await ws.send(json.dumps({
+                "type": MessageType.TASK_FINISH
+            }))
+        except:
+            pass
+
+        raise typer.Exit(status or 0)
 
 
 def convert_newtask_to_dict(new_task: NewTask):
@@ -185,8 +196,53 @@ def convert_newtask_to_dict(new_task: NewTask):
 
 
 @app.command()
-def ls():
-    pass
+def ps():
+    di.init()
+    settings = di.settings()
+    current_user = getpass.getuser()
+
+    params = {
+        "start": 0,
+        "size": 100,
+    }
+
+    response = requests.get(
+        f"http://localhost:{settings.api_port}/tasks/search",
+        params=params
+    )
+
+    if response.status_code != 200:
+        typer.secho(f"Got error response from daemon ({response.status_code})")
+        raise typer.Exit(response.status_code)
+
+    data = response.json()
+    task_list = TaskList.parse_obj(data)
+    print_task_list(task_list)
+
+
+def print_task_list(task_list: TaskList):
+    tasks = task_list.tasks
+    headers = ["ID", "Command", "Created by", "Created at", "Priority", "Delay", "Status"]
+
+    rows = []
+    for task in tasks:
+        cmd = task.cmd
+        if len(cmd) > 10:
+            cmd = cmd[:10] + "..."
+
+        created_at_dt = datetime.fromtimestamp(task.created_at / 1000)
+        created_at = created_at_dt.strftime("%Y-%m-%d, %H:%M:%S")
+        priority = task.priority.name
+        delay = str(task.init_delay_s) + "s"
+        status = "PENDING" if not task.is_running else "RUNNING"
+
+        rows.append([
+            task.id, cmd, task.created_by,
+            created_at, priority,
+            delay, status
+        ])
+
+    typer.echo(tabulate.tabulate(rows, headers=headers))
 
 def main():
     app()

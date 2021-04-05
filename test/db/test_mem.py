@@ -51,7 +51,7 @@ class InMemoryDbTestCase(TestCase):
                 id="2",
                 cmd="",
                 created_at=1,
-                created_by="",
+                created_by="a",
                 priority=TaskPriority.HIGH,
                 usage=TaskResourceUsage()
             )
@@ -70,3 +70,16 @@ class InMemoryDbTestCase(TestCase):
 
             running = await db.get_running_tasks()
             self.assertEqual(len(running), 1)
+
+            l1 = await db.search_tasks()
+            self.assertEqual(l1.total, 2)
+
+            l2 = await db.search_tasks(created_by="a")
+            self.assertEqual(l2.total, 1)
+
+            l3 = await db.search_tasks(is_running=True)
+            self.assertEqual(l3.total, 1)
+
+            l4 = await db.search_tasks(size=1)
+            self.assertEqual(l4.total, 2)
+            self.assertEqual(len(l4.tasks), 1)

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from taskflow.model.task import Task
+from taskflow.model.task import Task, TaskList
 
 
 class ITaskflowDb(ABC):
@@ -10,6 +10,15 @@ class ITaskflowDb(ABC):
 
     async def shutdown(self):
         pass
+
+    @abstractmethod
+    async def search_tasks(self,
+        created_by: Optional[str] = None,
+        is_running: Optional[bool] = None,
+        start: int = 0,
+        size: int = 20,
+    ) -> TaskList:
+        raise NotImplementedError
 
     @abstractmethod
     async def get_task_by_id(self, id: str) -> Optional[Task]:
