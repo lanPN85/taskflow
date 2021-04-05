@@ -62,7 +62,7 @@ def run(
             raise typer.Exit(1)
 
         gpu_memory_usage = None
-        if di.nvml_available() and gpu_usage_strings is not None:
+        if gpu_usage_strings is not None:
             # Parse GPU settings
             gpu_memory_usage = {}
             for gs in gpu_usage_strings:

@@ -82,9 +82,6 @@ async def handle_task(
         await websocket.close()
     except (WebSocketDisconnect, ConnectionClosed):
         logger.warning("Socket disconnected")
-    except ValueError:
-        logger.warning("Invalid JSON data")
-        await websocket.close()
     except Exception as e:
         logger.exception("", e)
         await websocket.close()
