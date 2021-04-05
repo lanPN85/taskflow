@@ -120,8 +120,10 @@ async def start_proc(
                 data = await ws.recv()
 
                 os.system("clear")
-                typer.echo("Waiting for start signal...")
+                typer.secho("Waiting for start signal...", fg="#f0d718")
                 typer.echo(f"Task id: {task.id}")
+                typer.secho(task.cmd, bold=True)
+                typer.echo()
 
                 # Print elapsed time
                 elapsed_ms = get_timestamp_ms() - task.created_at
@@ -136,8 +138,14 @@ async def start_proc(
 
                 if message.type == MessageType.INFO_UPDATE:
                     info = ClientUpdateInfo.parse_obj(message.data)
-                    typer.echo(f"Pending tasks: {info.pending_tasks_count}")
-                    typer.echo(f"Running tasks: {info.running_tasks_count}")
+                    typer.secho(
+                        f"Pending tasks: {info.pending_tasks_count}",
+                        fg="#3fa5f2"
+                    )
+                    typer.secho(
+                        f"Running tasks: {info.running_tasks_count}",
+                        fg="#3fa5f2"
+                    )
         except KeyboardInterrupt:
             typer.secho("Task cancelled", fg="red")
             raise typer.Exit(2)
