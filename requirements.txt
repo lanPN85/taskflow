@@ -8,4 +8,4 @@ websockets==8.1
 colorama==0.4.4
 humanfriendly==9.1
 requests==2.25.1
-tabulate==
+tabulate==0.8.9
