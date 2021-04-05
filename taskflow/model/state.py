@@ -28,7 +28,7 @@ class SystemState:
         device_count = nvmlDeviceGetCount()
         for i in range(device_count):
             handle = nvmlDeviceGetHandleByIndex(i)
-            self.gpu_memory_free_bytes[str(i)] = nvmlDeviceGetMemoryInfo(handle).total
+            self.gpu_memory_free_bytes[str(i)] = nvmlDeviceGetMemoryInfo(handle).free
 
 
 class SystemStateUpdateCoroutine:
