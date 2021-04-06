@@ -8,6 +8,8 @@ import signal
 import yaml
 import humanfriendly as hf
 
+from websockets.exceptions import ConnectionClosed
+from halo import Halo
 from subprocess import Popen
 from typing import Any, Dict, Optional, List
 from datetime import timedelta
@@ -15,7 +17,7 @@ from datetime import timedelta
 from taskflow import di
 from taskflow.model.task import NewTask, Task, TaskPriority, TaskResourceUsage
 from taskflow.model.ws import ClientUpdateInfo, SocketMessage, MessageType
-from taskflow.utils import get_timestamp_ms, format_bytes
+from taskflow.utils import format_timedelta, get_timestamp_ms, format_bytes
 
 
 def run(
@@ -102,29 +104,33 @@ async def start_proc(
     uri = f"ws://localhost:{port}/tasks/start"
 
     async with websockets.connect(uri) as ws:
+        await ws.send(new_task.json())
+
         try:
-            await ws.send(new_task.json())
-
             data = await ws.recv()
-            task = Task.parse_obj(json.loads(data))
+        except ConnectionClosed:
+            typer.secho("Daemon stopped unexpectedly", fg="red")
+            raise typer.Exit(5)
+        task = Task.parse_obj(json.loads(data))
 
-            # Wait for start signal
-            can_start = False
+        # Wait for start signal
+        can_start = False
 
-            os.system("clear")
+        typer.secho("Waiting for start signal...", fg="yellow")
+        typer.echo(f"Task id: {task.id}")
+        typer.secho(task.cmd, bold=True)
+
+        spinner = Halo(spinner="line")
+        spinner.start()
+
+        try:
             while not can_start:
                 data = await ws.recv()
-
-                os.system("clear")
-                typer.secho("Waiting for start signal...", fg="yellow")
-                typer.echo(f"Task id: {task.id}")
-                typer.secho(task.cmd, bold=True)
-                typer.echo()
 
                 # Print elapsed time
                 elapsed_ms = get_timestamp_ms() - task.created_at
                 elapsed_td = timedelta(milliseconds=elapsed_ms)
-                typer.secho(f"Wait time: {hf.format_timespan(elapsed_td)}", bold=True)
+                elapsed_str = typer.style(format_timedelta(elapsed_td), fg="blue")
 
                 message = SocketMessage.parse_obj(json.loads(data))
 
@@ -134,21 +140,15 @@ async def start_proc(
 
                 if message.type == MessageType.INFO_UPDATE:
                     info = ClientUpdateInfo.parse_obj(message.data)
-                    typer.secho(
-                        f"Pending tasks: {info.pending_tasks_count}",
-                        fg="blue"
-                    )
-                    typer.secho(
-                        f"Running tasks: {info.running_tasks_count}",
-                        fg="blue"
-                    )
-        except KeyboardInterrupt:
-            typer.secho("Task cancelled", fg="red")
-            raise typer.Exit(2)
+                    info_str = typer.style(f"{info.pending_tasks_count} pending, {info.running_tasks_count} running")
+                    display = f"{elapsed_str} - {info_str}\r"
+                    spinner.text = display
+        except ConnectionClosed:
+            spinner.fail("Daemon stopped unexpectedly")
+            raise typer.Exit(5)
 
-        os.system("clear")
-        typer.echo(f"Task id: {task.id}")
-        typer.echo(task.cmd)
+        spinner.succeed()
+        typer.secho("Starting task...", fg="green")
 
         p = Popen(task.cmd, shell=True, env=os.environ)
         status = None

@@ -3,6 +3,7 @@ import humanfriendly as hf
 
 from typing import Optional
 from py3nvml.py3nvml import NVMLError, nvmlInit
+from datetime import timedelta
 
 
 def get_timestamp_ms():
@@ -35,8 +36,19 @@ def convert_byte_any(b) -> Optional[int]:
 
     if isinstance(b, float):
         return int(b)
-    
+
     if isinstance(b, str):
         return hf.parse_size(b, binary=True)
 
     raise ValueError("Cannot covert to bytes value")
+
+
+def format_timedelta(t: timedelta) -> str:
+    total = t.total_seconds()
+
+    hours = int(total / 3600)
+    rem = total % 3600
+    mins = int(rem / 60)
+    secs = int(rem % 60)
+
+    return f"{hours:02d}:{mins:02d}:{secs:02d}"
