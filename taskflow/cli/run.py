@@ -31,7 +31,7 @@ def run(
         help="Memory usage (eg. 100M, 2G,...)"
     ),
     init_delay_s: int = typer.Option(
-        5, "-d", "--delay",
+        60, "-d", "--delay",
         help="Startup time in seconds"
     ),
     gpu_usage_strings: Optional[List[str]] = typer.Option(
@@ -169,7 +169,7 @@ async def start_proc(
                 "type": MessageType.TASK_FINISH
             }))
         except:
-            pass
+            typer.secho("Daemon did not respond", fg="yellow")
 
         raise typer.Exit(status or 0)
 

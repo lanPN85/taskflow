@@ -45,6 +45,7 @@ class TaskScheduler:
 
             # Query pending tasks
             pending_tasks = await self.db.get_pending_tasks()
+            self.clean_task_locks(pending_tasks)
             if (len(pending_tasks) < 1):
                 logger.debug("No tasks pending")
                 continue
@@ -66,6 +67,21 @@ class TaskScheduler:
 
                     loop_interval = 2 + task.init_delay_s
                     break
+
+
+    def clean_task_locks(self, pending_tasks: List[Task]):
+        pending_ids = set([
+            t.id for t in pending_tasks
+        ])
+        removed_ids = []
+        for task_id in self.__task_locks.keys():
+            if task_id not in pending_ids:
+                removed_ids.append(task_id)
+
+        if len(removed_ids) > 0:
+            logger.debug(f"Cleaning {len(removed_ids)} task locks")
+            for id in removed_ids:
+                self.__task_locks.pop(id)
 
     def _sort_tasks_by_priority(self, tasks: List[Task]) -> List[Task]:
         return sorted(tasks, key=cmp_to_key(self.compare_tasks))
