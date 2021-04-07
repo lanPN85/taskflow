@@ -68,7 +68,6 @@ class TaskScheduler:
                     loop_interval = 2 + task.init_delay_s
                     break
 
-
     def clean_task_locks(self, pending_tasks: List[Task]):
         pending_ids = set([
             t.id for t in pending_tasks
