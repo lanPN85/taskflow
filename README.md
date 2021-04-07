@@ -11,6 +11,8 @@ Taskflow is a UNIX utility that allows users to schedule arbitrary tasks to run 
 - [Why Taskflow](#why-taskflow)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Architecture](#architecture)
+- [Contribution](#contribution)
 
 ## Why Taskflow?
 Taskflow is best explained with an example. Let's say 3 users, Alice, Bob and Chuck are sharing the same workstation. They all need to run tasks that uses the workstation GPU (eg. training AI models). Alice runs her task first, which takes up the entire GPU memory. Now Bob and Chuck have to wait for Alice's task to finish before they can run theirs, checking the workstation every now and then to see if it's their turn. Taskflow can instead do the waiting for them by monitoring GPU usage and run their tasks when enough resources is available.
