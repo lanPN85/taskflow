@@ -1,7 +1,9 @@
-<img
-    style="display: block; margin-left: auto; margin-right: auto"
+<p align="center">
+    <img
     src="images/taskflow.png"
+    alt="logo"
     height="100px"/>
+</p>
 
 # Taskflow: Share system resources without breaking a sweat
 Taskflow is a UNIX utility that allows users to schedule arbitrary tasks to run when the system has enough resources available.
