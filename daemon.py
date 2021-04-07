@@ -2,18 +2,15 @@ import asyncio
 import sys
 import uvicorn
 import os
-import time
 import uvloop
 
 from loguru import logger
-from threading import Thread
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from taskflow.endpoint import bind_app
 from taskflow import di
 from taskflow.model.state import SystemStateUpdateCoroutine
-from taskflow.model.settings import TaskflowSettings
 
 
 def main():

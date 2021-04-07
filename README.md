@@ -1,8 +1,5 @@
 <p align="center">
-    <img
-    src="images/taskflow.png"
-    alt="logo"
-    height="100px"/>
+    <img src="images/taskflow.png" alt="logo" height="100px"/>
 </p>
 
 # Taskflow: Share system resources without breaking a sweat
@@ -20,7 +17,10 @@ Taskflow is best explained with an example. Let's say 3 users, Alice, Bob and Ch
 If you ever find yourself in Bob and Chuck's situation, Taskflow may be able to help you :)
 
 ## Installation
-TODO
+The install script currently support Debian-based distros (Debian, Ubuntu,...) and Arch Linux. To install, run:
+```bash
+curl https://raw.githubusercontent.com/lanPN85/taskflow/master/scripts/install.sh | bash
+```
 
 ## Usage
 ### Basic usage
