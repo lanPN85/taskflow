@@ -24,7 +24,7 @@ class InMemoryDbTestCase(TestCase):
                 created_at=0,
                 created_by="",
                 priority=TaskPriority.MEDIUM,
-                usage=TaskResourceUsage()
+                usage=TaskResourceUsage(),
             )
 
             await db.insert_task(t1)
@@ -44,7 +44,7 @@ class InMemoryDbTestCase(TestCase):
                 created_at=0,
                 created_by="",
                 priority=TaskPriority.MEDIUM,
-                usage=TaskResourceUsage()
+                usage=TaskResourceUsage(),
             )
 
             t2 = Task(
@@ -53,7 +53,7 @@ class InMemoryDbTestCase(TestCase):
                 created_at=1,
                 created_by="a",
                 priority=TaskPriority.HIGH,
-                usage=TaskResourceUsage()
+                usage=TaskResourceUsage(),
             )
 
             await db.insert_task(t1)

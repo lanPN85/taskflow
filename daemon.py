@@ -34,18 +34,13 @@ def main():
     else:
         logger.info("NVML not available")
 
-    app = setup_api(
-        debug= is_debug
-    )
+    app = setup_api(debug=is_debug)
     api_coro = ApiCoroutine(
-        app=app,
-        api_host=settings.api_host,
-        api_port=settings.api_port
+        app=app, api_host=settings.api_host, api_port=settings.api_port
     )
 
     state_coro = SystemStateUpdateCoroutine(
-        state=di.state(),
-        interval_s=settings.system_query_interval
+        state=di.state(), interval_s=settings.system_query_interval
     )
 
     # Run everything in 1 thread
@@ -53,11 +48,7 @@ def main():
     try:
         loop = asyncio.get_event_loop()
 
-        future = asyncio.gather(
-            di.scheduler().loop(),
-            state_coro.run(),
-            api_coro.run()
-        )
+        future = asyncio.gather(di.scheduler().loop(), state_coro.run(), api_coro.run())
         loop.run_until_complete(future)
     except KeyboardInterrupt:
         logger.warning("Stopping daemon")
@@ -68,10 +59,7 @@ def main():
 
 
 def setup_api(debug=False) -> FastAPI:
-    app = FastAPI(
-        title="Taskflow API",
-        debug=debug
-    )
+    app = FastAPI(title="Taskflow API", debug=debug)
 
     # Routes
     bind_app(app)
@@ -79,7 +67,7 @@ def setup_api(debug=False) -> FastAPI:
     # Middlewares
     app.add_middleware(
         CORSMiddleware,
-        allow_origins='*',
+        allow_origins="*",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -102,20 +90,13 @@ class CustomServer(uvicorn.Server):
 
 
 class ApiCoroutine:
-    def __init__(self,
-        app: FastAPI,
-        api_host: str,
-        api_port: int
-    ) -> None:
+    def __init__(self, app: FastAPI, api_host: str, api_port: int) -> None:
         self.app = app
         self.api_host = api_host
         self.api_port = api_port
 
         config = uvicorn.Config(
-            self.app, host=self.api_host,
-            port=self.api_port,
-            workers=1,
-            loop="none"
+            self.app, host=self.api_host, port=self.api_port, workers=1, loop="none"
         )
 
         self.server = CustomServer(config)

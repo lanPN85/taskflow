@@ -21,27 +21,15 @@ class DisplayMode(str, Enum):
 
 
 def ps(
-    verbose: bool = typer.Option(
-        False, "-v",
-        help="Show additional info for tasks"
-    ),
+    verbose: bool = typer.Option(False, "-v", help="Show additional info for tasks"),
     only_mine: bool = typer.Option(
-        False, "--user", "-u",
-        help="Only show tasks started by the current user"
+        False, "--user", "-u", help="Only show tasks started by the current user"
     ),
-    only_running: bool = typer.Option(
-        False, "-r",
-        help="Only show running tasks"
-    ),
-    only_pending: bool = typer.Option(
-        False, "-p",
-        help="Only show pending tasks"
-    ),
+    only_running: bool = typer.Option(False, "-r", help="Only show running tasks"),
+    only_pending: bool = typer.Option(False, "-p", help="Only show pending tasks"),
     display_mode: DisplayMode = typer.Option(
-        DisplayMode.TABLE, "-o",
-        help="Set the display format",
-        show_choices=True
-    )
+        DisplayMode.TABLE, "-o", help="Set the display format", show_choices=True
+    ),
 ):
     di.init()
     settings = di.settings()
@@ -65,8 +53,7 @@ def ps(
         params["is_running"] = False
 
     response = requests.get(
-        f"http://localhost:{settings.api_port}/tasks/search",
-        params=params
+        f"http://localhost:{settings.api_port}/tasks/search", params=params
     )
 
     if response.status_code != 200:
@@ -83,6 +70,7 @@ def ps(
     elif display_mode == DisplayMode.PIPE:
         print_task_pipe(task_list)
 
+
 def print_task_pipe(task_list: TaskList):
     for task in task_list.tasks:
         typer.echo(task.id)
@@ -96,15 +84,16 @@ def print_task_table(task_list: TaskList, abbrev=True):
     tasks = task_list.tasks
 
     if abbrev:
-        headers = [
-            "ID", "Command",
-            "Created at", "Status"
-        ]
+        headers = ["ID", "Command", "Created at", "Status"]
     else:
         headers = [
-            "ID", "Command", "Created by",
-            "Created at", "Priority",
-            "Delay", "Status"
+            "ID",
+            "Command",
+            "Created by",
+            "Created at",
+            "Priority",
+            "Delay",
+            "Status",
         ]
 
     rows = []
@@ -120,15 +109,10 @@ def print_task_table(task_list: TaskList, abbrev=True):
         status = "PENDING" if not task.is_running else "RUNNING"
 
         if abbrev:
-            rows.append([
-                task.id, cmd,
-                created_at, status
-            ])
+            rows.append([task.id, cmd, created_at, status])
         else:
-            rows.append([
-                task.id, cmd, task.created_by,
-                created_at, priority,
-                delay, status
-            ])
+            rows.append(
+                [task.id, cmd, task.created_by, created_at, priority, delay, status]
+            )
 
     typer.echo(tabulate.tabulate(rows, headers=headers))

@@ -32,10 +32,7 @@ class SystemState:
 
 
 class SystemStateUpdateCoroutine:
-    def __init__(self,
-        state: SystemState,
-        interval_s: float = 5
-    ) -> None:
+    def __init__(self, state: SystemState, interval_s: float = 5) -> None:
         self.state = state
         self.interval_s = interval_s
         self.__stop_signal = asyncio.Event()
@@ -46,10 +43,7 @@ class SystemStateUpdateCoroutine:
         while True:
             should_stop = True
             try:
-                await asyncio.wait_for(
-                    self.__stop_signal.wait(),
-                    self.interval_s
-                )
+                await asyncio.wait_for(self.__stop_signal.wait(), self.interval_s)
             except asyncio.TimeoutError:
                 should_stop = False
             if should_stop:

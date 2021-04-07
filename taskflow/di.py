@@ -14,9 +14,7 @@ __db: Optional[ITaskflowDb] = None
 __scheduler: Optional[TaskScheduler] = None
 
 
-def init(
-    settings_path="/etc/taskflow/settings.yml"
-):
+def init(settings_path="/etc/taskflow/settings.yml"):
     global __settings
     with open(settings_path, "rt") as f:
         __settings = TaskflowSettings.from_yaml(f)
@@ -32,7 +30,7 @@ def init(
         state=state(),
         db=db(),
         reserved_memory_bytes=settings().reserved_memory_bytes,
-        reserved_gpu_memory_bytes=settings().reserved_gpu_memory_bytes
+        reserved_gpu_memory_bytes=settings().reserved_gpu_memory_bytes,
     )
 
 

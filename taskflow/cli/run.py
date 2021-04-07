@@ -22,30 +22,22 @@ from taskflow.utils import format_timedelta, get_timestamp_ms, format_bytes
 
 def run(
     cmd: str,
-    priority = typer.Option(
-        "100", "-p",
-        help="Task priority (0-LOW, 100-MEDIUM, 200-HIGH)"
+    priority=typer.Option(
+        "100", "-p", help="Task priority (0-LOW, 100-MEDIUM, 200-HIGH)"
     ),
-    memory_usage = typer.Option(
-        None, "-m",
-        help="Memory usage (eg. 100M, 2G,...)"
-    ),
+    memory_usage=typer.Option(None, "-m", help="Memory usage (eg. 100M, 2G,...)"),
     init_delay_s: int = typer.Option(
-        60, "-d", "--delay",
-        help="Startup time in seconds"
+        60, "-d", "--delay", help="Startup time in seconds"
     ),
     gpu_usage_strings: Optional[List[str]] = typer.Option(
-        None, "--gpu",
-        help="Specify memory usage for each GPU, with format <gpu-id>:<usage>. Eg. 0:1G"
+        None,
+        "--gpu",
+        help="Specify memory usage for each GPU, with format <gpu-id>:<usage>. Eg. 0:1G",
     ),
-    file: Optional[str] = typer.Option(
-        None, "-f",
-        help="Path to options file to load"
-    ),
+    file: Optional[str] = typer.Option(None, "-f", help="Path to options file to load"),
     save_to_file: Optional[str] = typer.Option(
-        None, "-s",
-        help="Path to file on which options will be saved"
-    )
+        None, "-s", help="Path to file on which options will be saved"
+    ),
 ):
     di.init()
     current_user = getpass.getuser()
@@ -73,9 +65,8 @@ def run(
             priority=priority,
             init_delay_s=init_delay_s,
             usage=TaskResourceUsage(
-                memory_bytes=memory_usage,
-                gpu_memory_bytes=gpu_memory_usage
-            )
+                memory_bytes=memory_usage, gpu_memory_bytes=gpu_memory_usage
+            ),
         )
     else:
         # Parse from file
@@ -92,15 +83,10 @@ def run(
             yaml.dump(dout, f)
 
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(start_proc(
-        new_task, port=di.settings().api_port
-    ))
+    loop.run_until_complete(start_proc(new_task, port=di.settings().api_port))
 
 
-async def start_proc(
-    new_task: NewTask,
-    port: int
-):
+async def start_proc(new_task: NewTask, port: int):
     uri = f"ws://localhost:{port}/tasks/start"
 
     async with websockets.connect(uri) as ws:
@@ -140,7 +126,9 @@ async def start_proc(
 
                 if message.type == MessageType.INFO_UPDATE:
                     info = ClientUpdateInfo.parse_obj(message.data)
-                    info_str = typer.style(f"{info.pending_tasks_count} pending, {info.running_tasks_count} running")
+                    info_str = typer.style(
+                        f"{info.pending_tasks_count} pending, {info.running_tasks_count} running"
+                    )
                     display = f"{elapsed_str} - {info_str}\r"
                     spinner.text = display
         except ConnectionClosed:
@@ -165,9 +153,7 @@ async def start_proc(
 
         # Send finish signal
         try:
-            await ws.send(json.dumps({
-                "type": MessageType.TASK_FINISH
-            }))
+            await ws.send(json.dumps({"type": MessageType.TASK_FINISH}))
         except:
             typer.secho("Daemon did not respond", fg="yellow")
 

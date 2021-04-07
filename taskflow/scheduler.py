@@ -8,14 +8,16 @@ from taskflow.db.base import ITaskflowDb
 from taskflow.model.state import SystemState
 from taskflow.model.task import TaskPriority, Task
 
+
 class TaskScheduler:
     DEFAULT_LOOP_INTERVAL_S = 5
 
-    def __init__(self,
+    def __init__(
+        self,
         state: SystemState,
         db: ITaskflowDb,
         reserved_memory_bytes: int,
-        reserved_gpu_memory_bytes: int
+        reserved_gpu_memory_bytes: int,
     ) -> None:
         self.state = state
         self.db = db
@@ -46,13 +48,11 @@ class TaskScheduler:
             # Query pending tasks
             pending_tasks = await self.db.get_pending_tasks()
             self.clean_task_locks(pending_tasks)
-            if (len(pending_tasks) < 1):
+            if len(pending_tasks) < 1:
                 logger.debug("No tasks pending")
                 continue
 
-            sorted_pending_tasks = self._sort_tasks_by_priority(
-                pending_tasks
-            )
+            sorted_pending_tasks = self._sort_tasks_by_priority(pending_tasks)
 
             for task in sorted_pending_tasks:
                 if self.can_task_run(task):
@@ -69,9 +69,7 @@ class TaskScheduler:
                     break
 
     def clean_task_locks(self, pending_tasks: List[Task]):
-        pending_ids = set([
-            t.id for t in pending_tasks
-        ])
+        pending_ids = set([t.id for t in pending_tasks])
         removed_ids = []
         for task_id in self.__task_locks.keys():
             if task_id not in pending_ids:
@@ -127,9 +125,7 @@ class TaskScheduler:
             self.__task_locks[task.id] = task_lock
 
         try:
-            await asyncio.wait_for(
-                task_lock.wait(), timeout
-            )
+            await asyncio.wait_for(task_lock.wait(), timeout)
             return True
         except asyncio.TimeoutError:
             return False

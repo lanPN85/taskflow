@@ -11,7 +11,8 @@ class InMemoryDb(ITaskflowDb):
         self.__tasks = Table("tasks")
         self.__tasks.create_index("id", unique=True)
 
-    async def search_tasks(self,
+    async def search_tasks(
+        self,
         created_by: Optional[str] = None,
         is_running: Optional[bool] = None,
         start: int = 0,
@@ -29,12 +30,9 @@ class InMemoryDb(ITaskflowDb):
 
         total = len(t)
 
-        t = t[start:start + size]
+        t = t[start : start + size]
 
-        return TaskList(
-            tasks=list(t),
-            total=total
-        )
+        return TaskList(tasks=list(t), total=total)
 
     async def get_task_by_id(self, id: str) -> Optional[Task]:
         try:
@@ -51,14 +49,10 @@ class InMemoryDb(ITaskflowDb):
         return len(t)
 
     async def get_pending_tasks(self) -> List[Task]:
-        return list(self.__tasks.where(
-            lambda x: not x.is_running
-        ))
+        return list(self.__tasks.where(lambda x: not x.is_running))
 
     async def get_running_tasks(self) -> List[Task]:
-        return list(self.__tasks.where(
-            lambda x: x.is_running
-        ))
+        return list(self.__tasks.where(lambda x: x.is_running))
 
     async def insert_task(self, task: Task):
         self.__tasks.insert(task)

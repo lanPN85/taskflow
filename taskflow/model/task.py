@@ -26,10 +26,8 @@ class TaskResourceUsage(BaseModel):
         if v is None:
             return None
 
-        return dict([
-            (k, convert_byte_any(x))
-            for k, x in v.items()
-        ])
+        return dict([(k, convert_byte_any(x)) for k, x in v.items()])
+
 
 class Task(BaseModel):
     id: str
@@ -67,5 +65,5 @@ class NewTask(BaseModel):
             created_by=self.created_by,
             priority=self.priority,
             usage=self.usage,
-            init_delay_s=self.init_delay_s
+            init_delay_s=self.init_delay_s,
         )

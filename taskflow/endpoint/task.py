@@ -13,20 +13,16 @@ from taskflow.model.ws import ClientUpdateInfo, MessageType, SocketMessage
 router = APIRouter()
 
 
-@router.get("/search",
-    response_model=TaskList
-)
+@router.get("/search", response_model=TaskList)
 async def search_tasks(
     created_by: Optional[str] = Query(None),
     is_running: Optional[bool] = Query(None),
     start: int = Query(0),
     size: int = Query(20),
-    db: ITaskflowDb = Depends(di.db)
+    db: ITaskflowDb = Depends(di.db),
 ):
     return await db.search_tasks(
-        created_by=created_by,
-        is_running=is_running,
-        start=start, size=size
+        created_by=created_by, is_running=is_running, start=start, size=size
     )
 
 
@@ -34,7 +30,7 @@ async def search_tasks(
 async def handle_task(
     websocket: WebSocket,
     db: ITaskflowDb = Depends(di.db),
-    scheduler: TaskScheduler = Depends(di.scheduler)
+    scheduler: TaskScheduler = Depends(di.scheduler),
 ):
     task = None
     try:
@@ -59,20 +55,16 @@ async def handle_task(
                 type=MessageType.INFO_UPDATE,
                 data=ClientUpdateInfo(
                     pending_tasks_count=pending_tasks_count,
-                    running_tasks_count=running_tasks_count
-                )
+                    running_tasks_count=running_tasks_count,
+                ),
             )
             await websocket.send_text(message.json())
 
             # Check if the task can be executed
             can_start = await scheduler.wait_for_task_execution(task)
             if can_start:
-                message = SocketMessage(
-                    type=MessageType.TASK_CAN_START
-                )
-                await websocket.send_text(
-                    message.json()
-                )
+                message = SocketMessage(type=MessageType.TASK_CAN_START)
+                await websocket.send_text(message.json())
 
                 task.is_running = True
                 task.started_at = get_timestamp_ms()

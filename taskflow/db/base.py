@@ -12,7 +12,8 @@ class ITaskflowDb(ABC):
         pass
 
     @abstractmethod
-    async def search_tasks(self,
+    async def search_tasks(
+        self,
         created_by: Optional[str] = None,
         is_running: Optional[bool] = None,
         start: int = 0,
@@ -51,4 +52,3 @@ class ITaskflowDb(ABC):
     @abstractmethod
     async def delete_task(self, task: Task):
         raise NotImplementedError
-
