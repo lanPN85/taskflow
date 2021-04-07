@@ -23,7 +23,7 @@ from taskflow.utils import format_timedelta, get_timestamp_ms, format_bytes
 def run(
     cmd: str,
     priority=typer.Option(
-        "100", "-p", help="Task priority (0-LOW, 100-MEDIUM, 200-HIGH)"
+        "100", "-p", help="Task priority (0=LOW, 100=MEDIUM, 200=HIGH)"
     ),
     memory_usage=typer.Option(None, "-m", help="Memory usage (eg. 100M, 2G,...)"),
     init_delay_s: int = typer.Option(
@@ -89,75 +89,84 @@ def run(
 async def start_proc(new_task: NewTask, port: int):
     uri = f"ws://localhost:{port}/tasks/start"
 
-    async with websockets.connect(uri) as ws:
-        await ws.send(new_task.json())
-
+    while True:
         try:
-            data = await ws.recv()
-        except ConnectionClosed:
-            typer.secho("Daemon stopped unexpectedly", fg="red")
-            raise typer.Exit(5)
-        task = Task.parse_obj(json.loads(data))
+            async with websockets.connect(uri) as ws:
+                await ws.send(new_task.json())
 
-        # Wait for start signal
-        can_start = False
+                try:
+                    data = await ws.recv()
+                except ConnectionClosed:
+                    typer.secho("Daemon stopped unexpectedly", fg="red")
+                    raise typer.Exit(5)
+                task = Task.parse_obj(json.loads(data))
 
-        typer.secho("Waiting for start signal...", fg="yellow")
-        typer.echo(f"Task id: {task.id}")
-        typer.secho(task.cmd, bold=True)
+                # Wait for start signal
+                can_start = False
 
-        spinner = Halo(spinner="line")
-        spinner.start()
+                typer.secho("Waiting for start signal...", fg="yellow")
+                typer.echo(f"Task id: {task.id}")
+                typer.secho(task.cmd, bold=True)
 
-        try:
-            while not can_start:
-                data = await ws.recv()
+                spinner = Halo(spinner="line")
+                spinner.start()
 
-                # Print elapsed time
-                elapsed_ms = get_timestamp_ms() - task.created_at
-                elapsed_td = timedelta(milliseconds=elapsed_ms)
-                elapsed_str = typer.style(format_timedelta(elapsed_td), fg="blue")
+                try:
+                    while not can_start:
+                        data = await ws.recv()
 
-                message = SocketMessage.parse_obj(json.loads(data))
+                        # Print elapsed time
+                        elapsed_ms = get_timestamp_ms() - task.created_at
+                        elapsed_td = timedelta(milliseconds=elapsed_ms)
+                        elapsed_str = typer.style(
+                            format_timedelta(elapsed_td), fg="blue"
+                        )
 
-                if message.type == MessageType.TASK_CAN_START:
-                    can_start = True
-                    continue
+                        message = SocketMessage.parse_obj(json.loads(data))
 
-                if message.type == MessageType.INFO_UPDATE:
-                    info = ClientUpdateInfo.parse_obj(message.data)
-                    info_str = typer.style(
-                        f"{info.pending_tasks_count} pending, {info.running_tasks_count} running"
-                    )
-                    display = f"{elapsed_str} - {info_str}\r"
-                    spinner.text = display
-        except ConnectionClosed:
-            spinner.fail("Daemon stopped unexpectedly")
-            raise typer.Exit(5)
+                        if message.type == MessageType.TASK_CAN_START:
+                            can_start = True
+                            continue
 
-        spinner.succeed()
-        typer.secho("Starting task...", fg="green")
+                        if message.type == MessageType.INFO_UPDATE:
+                            info = ClientUpdateInfo.parse_obj(message.data)
+                            info_str = typer.style(
+                                f"{info.pending_tasks_count} pending, {info.running_tasks_count} running"
+                            )
+                            display = f"{elapsed_str} - {info_str}\r"
+                            spinner.text = display
+                except ConnectionClosed:
+                    spinner.fail("Daemon stopped unexpectedly")
+                    raise
 
-        p = Popen(task.cmd, shell=True, env=os.environ)
-        status = None
-        try:
-            while True:
-                status = p.poll()
-                is_done = status is not None
-                if is_done:
-                    break
-                await asyncio.sleep(0.5)
-        except KeyboardInterrupt:
-            p.send_signal(signal.SIGTERM)
-            p.wait()
+                spinner.succeed()
+                typer.secho("Starting task...", fg="green")
 
-        # Send finish signal
-        try:
-            await ws.send(json.dumps({"type": MessageType.TASK_FINISH}))
-        except:
-            typer.secho("Daemon did not respond", fg="yellow")
+                p = Popen(task.cmd, shell=True, env=os.environ)
+                status = None
+                try:
+                    while True:
+                        status = p.poll()
+                        is_done = status is not None
+                        if is_done:
+                            break
+                        await asyncio.sleep(0.5)
+                except KeyboardInterrupt:
+                    p.send_signal(signal.SIGTERM)
+                    p.wait()
 
-        raise typer.Exit(status or 0)
+                # Send finish signal
+                try:
+                    await ws.send(json.dumps({"type": MessageType.TASK_FINISH}))
+                except:
+                    typer.secho("Daemon did not respond", fg="yellow")
+
+                raise typer.Exit(status or 0)
+        except (ConnectionClosed, OSError):
+            typer.secho(
+                "Daemon closed connection. Retrying in 5 seconds...", fg="yellow"
+            )
+            await asyncio.sleep(5)
 
 
 def convert_newtask_to_dict(new_task: NewTask):
