@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['/home/lanpn/workspace/personal/taskflow'],
+             pathex=['.'],
              binaries=[],
              datas=[],
              hiddenimports=[],
