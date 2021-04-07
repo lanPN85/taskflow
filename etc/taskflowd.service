@@ -1,0 +1,9 @@
+[Unit]
+Description=Taskflow daemon service
+
+[Service]
+Type=Simple
+ExecStart=/usr/bin/taskflowd
+
+[Install]
+WantedBy=multi-user.target
