@@ -14,8 +14,8 @@ apt-get install -y \
     python3.7-dev \
     virtualenv
 
-./scripts/build-install.sh \
-    && cp ./etc/taskflowd.service /etc/systemd/system/taskflowd.service
+./scripts/build-install.sh
+cp ./etc/taskflowd.service /etc/systemd/system/taskflowd.service || true
 
-systemctl start taskflowd
-systemctl enable taskflowd
+service taskflowd start || echo "ERROR: Systemd not available"
+service taskflowd enable || true
