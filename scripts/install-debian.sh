@@ -5,7 +5,9 @@ set -eu
 apt-get update
 apt-get install -y \
     software-properties-common \
-    systemd
+    systemd \
+    binutils \
+    glibc
 
 add-apt-repository -y ppa:deadsnakes/ppa
 apt-get update
