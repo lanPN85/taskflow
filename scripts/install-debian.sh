@@ -6,8 +6,7 @@ apt-get update
 apt-get install -y \
     software-properties-common \
     systemd \
-    binutils \
-    glibc
+    binutils
 
 add-apt-repository -y ppa:deadsnakes/ppa
 apt-get update
