@@ -1,3 +1,5 @@
+__DISCLAIMER: This repository is in an alpha state and not production-ready. Features and APIs may change and there may be bugs. Use at your own risk.__
+
 <p align="center">
     <img src="images/taskflow.png" alt="logo" height="100px"/>
 </p>
