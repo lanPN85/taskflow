@@ -4,7 +4,7 @@ set -eu
 
 virtualenv -p python3.7 venv
 
-source venv/bin/activate \
+. venv/bin/activate \
     && pip install -r requirements.txt \
     && pip install -r requirements.dev.txt \
     && pyinstaller taskflow.spec \

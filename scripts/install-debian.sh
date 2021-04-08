@@ -3,7 +3,9 @@
 set -eu
 
 apt-get update
-apt-get install -y software-properties-common
+apt-get install -y \
+    software-properties-common \
+    systemd
 
 add-apt-repository -y ppa:deadsnakes/ppa
 apt-get update
