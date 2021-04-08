@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 set -eu
 
@@ -21,6 +21,7 @@ fi
 
 # Install git
 if OS=="Debian"; then
+    apt-get update
     apt-get install -y git
 elif OS=="Arch Linux"; then
     pacman -S --noconfirm git
