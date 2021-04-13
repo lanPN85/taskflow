@@ -19,10 +19,14 @@ Taskflow is best explained with an example. Let's say 3 users, Alice, Bob and Ch
 If you ever find yourself in Bob and Chuck's situation, Taskflow may be able to help you :)
 
 ## Installation
-The install script currently support Debian-based distros (Debian, Ubuntu,...) and Arch Linux. To install, run:
-```bash
-curl https://raw.githubusercontent.com/lanPN85/taskflow/master/scripts/install.sh | sudo bash
-```
+### Ubuntu
+TODO
+
+### Arch Linux
+TODO
+
+### Building from source
+If you are using an unsupported distro or CPU architecture, see the building from source [instructions](docs/SOURCE_BUILD.md).
 
 ## Usage
 ### Basic usage
@@ -40,6 +44,9 @@ All environment settings in the shell (eg. virtualenv, conda, etc...) are preser
 ### View current tasks
 You can view tasks managed by Taskflow using `taskflow ps`
 
+### Configuration
+Taskflow can be configured by editing `etc/taskflow/settings.yml`. The Taskflow daemon should be restarted for changes to take effect. For systemd, the restart command would be `sudo systemctl restart taskflowd`.
+
 ### Usage notes
 Taskflow does not check whether a task actually uses the resources it asks for, meaning you can be give a rough estimate of how much resource a task need to not fail.
 
@@ -48,7 +55,7 @@ After starting a task, Taskflow has a default timeout of 60 seconds before anoth
 Refer to `taskflow --help` for detailed documentation of available commands.
 
 ## Architecture
-If you're curious about how Taskflow works, refer to [this file](ARCHITECTURE.md).
+If you're curious about how Taskflow works, refer to [this file](docs/ARCHITECTURE.md).
 
 ## Contribution
-To contribute to Taskflow development, refer to the [Contribution guide](CONTRIBUTING.md).
+To contribute to Taskflow development, refer to the [Contribution guide](docs/CONTRIBUTING.md).
