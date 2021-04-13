@@ -52,23 +52,27 @@ def ps(
     elif only_pending:
         params["is_running"] = False
 
-    response = requests.get(
-        f"http://localhost:{settings.api_port}/tasks/search", params=params
-    )
+    try:
+        response = requests.get(
+            f"http://localhost:{settings.api_port}/tasks/search", params=params
+        )
 
-    if response.status_code != 200:
-        typer.secho(f"Got error response from daemon ({response.status_code})")
-        raise typer.Exit(response.status_code)
+        if response.status_code != 200:
+            typer.secho(f"Got error response from daemon ({response.status_code})")
+            raise typer.Exit(response.status_code)
 
-    data = response.json()
-    task_list = TaskList.parse_obj(data)
+        data = response.json()
+        task_list = TaskList.parse_obj(data)
 
-    if display_mode == DisplayMode.TABLE:
-        print_task_table(task_list, abbrev=not verbose)
-    elif display_mode == DisplayMode.JSON:
-        print_task_json(task_list)
-    elif display_mode == DisplayMode.PIPE:
-        print_task_pipe(task_list)
+        if display_mode == DisplayMode.TABLE:
+            print_task_table(task_list, abbrev=not verbose)
+        elif display_mode == DisplayMode.JSON:
+            print_task_json(task_list)
+        elif display_mode == DisplayMode.PIPE:
+            print_task_pipe(task_list)
+    except requests.RequestException:
+        typer.secho("Cannot connect to daemon. Is taskflowd running?", fg="red")
+        raise typer.Exit(10)
 
 
 def print_task_pipe(task_list: TaskList):

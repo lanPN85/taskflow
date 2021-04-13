@@ -21,7 +21,7 @@ from taskflow.utils import format_timedelta, get_timestamp_ms, format_bytes
 
 
 def run(
-    cmd: str,
+    cmd: List[str] = typer.Argument(...),
     priority=typer.Option(
         "100", "-p", help="Task priority (0=LOW, 100=MEDIUM, 200=HIGH)"
     ),
@@ -43,6 +43,8 @@ def run(
     current_user = getpass.getuser()
     new_task = None
 
+    cmd_str = " ".join(cmd)
+
     if file is None:
         # Parse from CLI options
         try:
@@ -60,7 +62,7 @@ def run(
                 gpu_memory_usage[gpu_id] = usage
 
         new_task = NewTask(
-            cmd=cmd,
+            cmd=cmd_str,
             created_by=current_user,
             priority=priority,
             init_delay_s=init_delay_s,
@@ -72,7 +74,7 @@ def run(
         # Parse from file
         with open(file, "rt") as f:
             d = yaml.full_load(f)
-        d["cmd"] = cmd
+        d["cmd"] = cmd_str
         d["created_by"] = current_user
         new_task = NewTask.parse_obj(d)
 
@@ -163,9 +165,7 @@ async def start_proc(new_task: NewTask, port: int):
 
                 raise typer.Exit(status or 0)
         except (ConnectionClosed, OSError):
-            typer.secho(
-                "Daemon closed connection. Retrying in 5 seconds...", fg="yellow"
-            )
+            typer.secho("Cannot contact daemon. Retrying in 5 seconds...", fg="yellow")
             await asyncio.sleep(5)
 
 

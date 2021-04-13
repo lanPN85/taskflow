@@ -18,6 +18,10 @@ Taskflow is best explained with an example. Let's say 3 users, Alice, Bob and Ch
 
 If you ever find yourself in Bob and Chuck's situation, Taskflow may be able to help you :)
 
+I wrote Taskflow because I found myself constantly checking the lab workstation to run my GPU tasks. Taskflow is dead simple. It simply delays the execution of whatever command passed to it until it's appropriate to start. It features a simple scheduler so multiple tasks can be queued up at the same time. If you want something to run and there's no resource for it yet, just schedule it with Taskflow!
+
+Taskflow is NOT a distributed task runner. There is no virtualization layer, tasks are executed in the same shell with the same environment. This means you can put `taskflow run` before any command or workflow you currently have, no change required.
+
 ## Installation
 ### Ubuntu
 TODO
@@ -33,19 +37,19 @@ If you are using an unsupported distro or CPU architecture, see the building fro
 Once Taskflow is installed, schedule your tasks using `taskflow run`. Use CLI options to declare the amount of resources the task needs. Currently, RAM and GPU memory are supported resources.
 ```bash
 # Run task using 5GB RAM
-taskflow run -m 5G "my-command --option X Y"
+taskflow run -m 5G my-command --option X Y
 
 # Run task using 10GB memory on GPU 0
-taskflow run --gpu 0:10G "my-command --option X Y"
+taskflow run --gpu 0:10G my-command --option X Y
 ```
 
-All environment settings in the shell (eg. virtualenv, conda, etc...) are preserved when using Taskflow. This means you can drop Taskflow in any existing project or workflow with zero changes.
+All environment settings in the shell (eg. virtualenv, conda, etc...) are preserved when using Taskflow.
 
 ### View current tasks
 You can view tasks managed by Taskflow using `taskflow ps`
 
 ### Configuration
-Taskflow can be configured by editing `etc/taskflow/settings.yml`. The Taskflow daemon should be restarted for changes to take effect. For systemd, the restart command would be `sudo systemctl restart taskflowd`.
+Taskflow can be configured by editing `/etc/taskflow/settings.yml`. The Taskflow daemon should be restarted for changes to take effect. For systemd, the restart command would be `sudo systemctl restart taskflowd`.
 
 ### Usage notes
 Taskflow does not check whether a task actually uses the resources it asks for, meaning you can be give a rough estimate of how much resource a task need to not fail.
