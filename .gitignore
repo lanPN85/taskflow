@@ -1,5 +1,4 @@
 .vscode/
 *.pyc
 .coverage
-build/
 dist/

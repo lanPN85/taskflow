@@ -1,4 +1,7 @@
-default: build
+BINDIR=/usr/bin
+DESTDIR=
+
+all: build
 
 build: dist/taskflow dist/taskflowd
 
@@ -8,16 +11,18 @@ dist/taskflow: main.py taskflow/*.py taskflow/**/*.py taskflow.spec
 dist/taskflowd: daemon.py taskflow/*.py taskflow/**/*.py taskflowd.spec
 	pyinstaller taskflowd.spec
 
+# Install script for Debian
 install:
-	cp dist/taskflow /usr/bin/taskflow
-	cp dist/taskflowd /usr/bin/taskflowd
-	chmod a+x /usr/bin/taskflow /usr/bin/taskflowd
-	mkdir -p /etc/taskflow
-	test -f "/etc/taskflow/settings.yml" || cp ./etc/default-settings.yml /etc/taskflow/settings.yml
+	mkdir -p ${DESTDIR}${BINDIR}
+	cp dist/taskflow ${DESTDIR}${BINDIR}/taskflow
+	cp dist/taskflowd ${DESTDIR}${BINDIR}/taskflowd
+	chmod a+x ${DESTDIR}${BINDIR}/taskflow ${DESTDIR}${BINDIR}/taskflowd
+	mkdir -p ${DESTDIR}/etc/taskflow
+	test -f "${DESTDIR}/etc/taskflow/settings.yml" || cp ./etc/default-settings.yml ${DESTDIR}/etc/taskflow/settings.yml
 
 TEST_ARGS=--cov=.
 TEST_TARGET=test/
 test:
 	pytest $(TEST_ARGS) $(TEST_TARGET)
 
-.PHONY: test build default install
+.PHONY: test build all install

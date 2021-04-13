@@ -10,5 +10,5 @@ Restart=always
 RestartSec=5
 
 [Install]
-Alias=taskflowd
+Alias=taskflowd.service
 WantedBy=multi-user.target

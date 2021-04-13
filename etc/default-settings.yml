@@ -1,7 +1,7 @@
 # Listening address for the Taskflow API server
 # You can change this to 0.0.0.0 to allow API access from external machines
 # This can create security problems. USE WITH CAUTION
-api_host: "localhost"
+api_host: "127.0.0.1"
 
 # Set the listen port for the API server
 # api_port: 4305

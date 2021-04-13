@@ -1,0 +1,6 @@
+.debhelper/
+taskflow/
+taskflowetc/
+taskflowusr/
+*.log
+*.debhelper

@@ -1,0 +1,16 @@
+Source: taskflow
+Section: utils
+Priority: optional
+Maintainer: Phan Ngoc Lan <phan.ngoclan58@gmail.com>
+Build-Depends:
+Standards-Version: 4.5.1
+Homepage: https://github.com/lanPN85/taskflow
+Vcs-Browser: https://github.com/lanPN85/taskflow
+Vcs-Git: https://github.com/lanPN85/taskflow.git
+Rules-Requires-Root: no
+
+Package: taskflow
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Simple resource-aware task scheduler
+ Taskflow is a simple resource-aware task scheduler
