@@ -11,7 +11,7 @@ dist/taskflow: main.py taskflow/*.py taskflow/**/*.py taskflow.spec
 dist/taskflowd: daemon.py taskflow/*.py taskflow/**/*.py taskflowd.spec
 	pyinstaller taskflowd.spec
 
-# Install script for Debian
+# Install script for Debian and Arch
 install:
 	mkdir -p ${DESTDIR}${BINDIR}
 	cp dist/taskflow ${DESTDIR}${BINDIR}/taskflow

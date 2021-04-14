@@ -10,6 +10,8 @@ from taskflow.utils import format_bytes
 
 
 class SystemState:
+    __slots__ = ["memory_free_bytes", "gpu_memory_free_bytes", "gpu_available"]
+
     def __init__(self, gpu_available=True) -> None:
         self.memory_free_bytes = 0
         self.gpu_memory_free_bytes: Dict[str, int] = {}
