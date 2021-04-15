@@ -22,10 +22,27 @@ Taskflow is NOT a distributed task runner. There is no virtualization layer, tas
 
 ## Installation
 ### Ubuntu
-TODO
+Debian packages are available for Ubuntu 16.04 and 18.04
+
+```bash
+# Ubuntu 18.04
+wget https://github.com/lanPN85/taskflow/releases/download/0.1.0/taskflow_0.1.0_ubuntu1804_amd64.deb
+sudo dpkg -i taskflow_0.1.0_ubuntu1804_amd64.deb
+sudo systemctl enable --now taskflowd
+
+# Ubuntu 20.04
+wget https://github.com/lanPN85/taskflow/releases/download/0.1.0/taskflow_0.1.0_ubuntu2004_amd64.deb
+sudo dpkg -i taskflow_0.1.0_ubuntu2004_amd64.deb
+sudo systemctl enable --now taskflowd
+```
 
 ### Arch Linux
-TODO
+An AUR repository is available for Arch Linux users: https://aur.archlinux.org/packages/taskflow-git/
+
+After installing, you will need to enable the `taskflowd` service for Taskflow to work properly:
+```bash
+sudo systemctl enable --now taskflowd
+```
 
 ### Building from source
 If you are using an unsupported distro or CPU architecture, see the building from source [instructions](docs/SOURCE_BUILD.md).
