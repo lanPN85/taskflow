@@ -3,7 +3,11 @@
 </p>
 
 # Taskflow: Share system resources without breaking a sweat
+![version](https://img.shields.io/badge/version-0.1.0-blue)
+![license](https://img.shields.io/github/license/lanPN85/taskflow)
+
 Taskflow is a UNIX utility that allows users to schedule arbitrary tasks to run when the system has enough resources available.
+
 
 - [Why Taskflow](#why-taskflow)
 - [Installation](#installation)
@@ -49,6 +53,10 @@ If you are using an unsupported distro or CPU architecture, see the building fro
 
 ## Usage
 ### Basic usage
+<p align="center">
+    <img src="images/example.gif" alt="example"/>
+</p>
+
 Once Taskflow is installed, schedule your tasks using `taskflow run`. Use CLI options to declare the amount of resources the task needs. Currently, RAM and GPU memory are supported resources.
 ```bash
 # Run task using 5GB RAM
