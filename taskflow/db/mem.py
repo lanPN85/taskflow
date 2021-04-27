@@ -6,6 +6,10 @@ from .base import ITaskflowDb
 
 
 class InMemoryDb(ITaskflowDb):
+    """
+    In-memory implementation of ITaskflowDB
+    """
+
     def __init__(self) -> None:
         super().__init__()
         self.__tasks = Table("tasks")

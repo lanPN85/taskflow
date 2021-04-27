@@ -10,6 +10,15 @@ from taskflow.model.task import TaskPriority, Task
 
 
 class TaskScheduler:
+    """
+    Core task scheduler
+
+    :param state: The SystemState to query
+    :param db: An instance of ITaskflowDb to query pending tasks
+    :param reserved_memory_bytes: Number of bytes to leave free in memory when scheduling tasks
+    :param reserved_gpu_memory_bytes: Number of bytes to leave free in each GPU's memory when scheduling tasks
+    """
+
     DEFAULT_LOOP_INTERVAL_S = 5
 
     def __init__(
@@ -28,9 +37,16 @@ class TaskScheduler:
         self.__task_locks: Dict[str, asyncio.Event] = {}
 
     def stop(self):
+        """
+        Stops the loop
+        """
         self.__stop_signal.set()
 
     async def loop(self):
+        """
+        Runs the loop
+        """
+
         loop_interval = 0
 
         logger.debug("Scheduler started")
@@ -69,6 +85,12 @@ class TaskScheduler:
                     break
 
     def clean_task_locks(self, pending_tasks: List[Task]):
+        """
+        Removes all locks belonging to tasks that are no longer pending
+
+        :param pending_tasks: List of currently pending tasks
+        :type pending_tasks: List[Task]
+        """
         pending_ids = set([t.id for t in pending_tasks])
         removed_ids = []
         for task_id in self.__task_locks.keys():
@@ -95,6 +117,12 @@ class TaskScheduler:
         return t1.created_at - t2.created_at
 
     def can_task_run(self, task: Task) -> bool:
+        """
+        Check if a task can be run given the current system's state
+
+        :type task: Task
+        :rtype: bool
+        """
         task_mem = task.usage.memory_bytes or 0
         if self.state.memory_free_bytes - task_mem <= self.reserved_memory_bytes:
             return False
@@ -119,6 +147,15 @@ class TaskScheduler:
         return True
 
     async def wait_for_task_execution(self, task: Task, timeout=1) -> bool:
+        """
+        Asynchronously blocks until the lock for the given task is released, or until the timeout elapses.
+
+        :type task: Task
+        :param timeout: Timeout in seconds, defaults to 1
+        :type timeout: int, optional
+        :return: True if the lock has been released, False otherwise
+        :rtype: bool
+        """
         task_lock = self.__task_locks.get(task.id)
         if task_lock is None:
             task_lock = asyncio.Event()

@@ -1,3 +1,7 @@
+"""
+Entrypoint for the Taskflow daemon
+"""
+
 import asyncio
 import sys
 import uvicorn
@@ -56,6 +60,14 @@ def main():
 
 
 def setup_api(debug=False) -> FastAPI:
+    """
+    Sets up the FastAPI app
+
+    :param debug: Whether to enable debug mode, defaults to False
+    :type debug: bool, optional
+    :return: The app instance
+    :rtype: FastAPI
+    """
     app = FastAPI(title="Taskflow API", debug=debug)
 
     # Routes
@@ -82,11 +94,19 @@ def setup_api(debug=False) -> FastAPI:
 
 
 class CustomServer(uvicorn.Server):
+    """
+    A uvicorn server that skips signal handling, since we're running alongside other coroutines
+    """
+
     def install_signal_handlers(self):
         pass
 
 
 class ApiCoroutine:
+    """
+    Class for wrapping the custom uvicorn server
+    """
+
     def __init__(self, app: FastAPI, api_host: str, api_port: int) -> None:
         self.app = app
         self.api_host = api_host
@@ -99,9 +119,15 @@ class ApiCoroutine:
         self.server = CustomServer(config)
 
     async def run(self):
+        """
+        Starts the server
+        """
         await self.server.serve()
 
     def stop(self):
+        """
+        Stops the server
+        """
         self.server.should_exit = True
 
 

@@ -1,3 +1,7 @@
+"""
+Simple dependency injection module
+"""
+
 from typing import Optional
 
 from taskflow.model.settings import TaskflowSettings
@@ -15,6 +19,12 @@ __scheduler: Optional[TaskScheduler] = None
 
 
 def init(settings_path="/etc/taskflow/settings.yml"):
+    """
+    Initializes globals using the specified settings
+
+    :type settings_path: str, optional
+    """
+
     global __settings
     with open(settings_path, "rt") as f:
         __settings = TaskflowSettings.from_yaml(f)

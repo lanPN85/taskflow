@@ -6,8 +6,12 @@ from taskflow.utils import convert_byte_any
 
 
 class TaskflowSettings(BaseModel):
+    """
+    Class containing Taskflow's global settings
+    """
+
     task_retention_days: int = 30
-    api_host: str = "localhost"
+    api_host: str = "127.0.0.1"
     api_port: int = 4305
     reserved_memory_bytes: int = 100 * (1024 ** 2)  # 100MB
     reserved_gpu_memory_bytes: int = 1 * (1024 ** 2)  # 1MB

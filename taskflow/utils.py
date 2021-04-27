@@ -6,11 +6,22 @@ from py3nvml.py3nvml import NVMLError, nvmlInit
 from datetime import timedelta
 
 
-def get_timestamp_ms():
+def get_timestamp_ms() -> int:
+    """
+    Get the current timestamp in milliseconds
+
+    :rtype: int
+    """
     return int(time.time() * 1000)
 
 
 def check_has_nvml() -> bool:
+    """
+    Determines if libnvml is available on the system.
+    True means CUDA is available
+
+    :rtype: bool
+    """
     try:
         nvmlInit()
         return True
@@ -19,6 +30,14 @@ def check_has_nvml() -> bool:
 
 
 def format_bytes(b: float) -> str:
+    """
+    Formats an amount of bytes into a string containing the value in the highest possible unit
+
+    :param b: Number of bytes to convert
+    :type b: float
+    :return: Formatted string
+    :rtype: str
+    """
     units = ["B", "K", "M", "G", "T"]
     index = 0
     for i in range(len(units) - 1):
@@ -31,6 +50,13 @@ def format_bytes(b: float) -> str:
 
 
 def convert_byte_any(b) -> Optional[int]:
+    """
+    Converts a byte value into its integer value
+
+    :param b: A number of bytes, or a formatted string containing a byte value and unit
+    :raises ValueError: If the type is not int, float or str
+    :rtype: Optional[int]
+    """
     if b is None or isinstance(b, int):
         return b
 
@@ -44,6 +70,13 @@ def convert_byte_any(b) -> Optional[int]:
 
 
 def format_timedelta(t: timedelta) -> str:
+    """
+    Formats a timedelta object into HH:MM:SS
+
+    :type t: timedelta
+    :return: Formatted string
+    :rtype: str
+    """
     total = t.total_seconds()
 
     hours = int(total / 3600)

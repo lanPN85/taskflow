@@ -1,5 +1,6 @@
-taskflow (0.1.0) unstable; urgency=medium
+taskflow (0.2.0) unstable; urgency=medium
 
-  * Initial Release.
+  * 0.2.0 Release
+  * Change the default task timeout from 60s to 15s
 
- -- Lan Phan <phan.ngoclan58@gmail.com>  Fri, 09 Apr 2021 16:43:36 +0700
+ -- Lan Phan <phan.ngoclan58@gmail.com>  Tue, 27 Apr 2021 16:24:59 +0700

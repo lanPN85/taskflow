@@ -14,6 +14,10 @@ class TaskPriority(IntEnum):
 
 
 class TaskResourceUsage(BaseModel):
+    """
+    Container for a task's resource usage
+    """
+
     memory_bytes: Optional[int] = None
     gpu_memory_bytes: Optional[Dict[str, int]] = None
 
@@ -30,6 +34,10 @@ class TaskResourceUsage(BaseModel):
 
 
 class Task(BaseModel):
+    """
+    Model for a task
+    """
+
     id: str
     cmd: str
     created_at: int

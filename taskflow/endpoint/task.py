@@ -21,6 +21,9 @@ async def search_tasks(
     size: int = Query(20),
     db: ITaskflowDb = Depends(di.db),
 ):
+    """
+    Search endpoint for tasks
+    """
     return await db.search_tasks(
         created_by=created_by, is_running=is_running, start=start, size=size
     )
@@ -32,6 +35,10 @@ async def handle_task(
     db: ITaskflowDb = Depends(di.db),
     scheduler: TaskScheduler = Depends(di.scheduler),
 ):
+    """
+    Websocket endpoint for starting a task
+    """
+
     task = None
     try:
         await websocket.accept()

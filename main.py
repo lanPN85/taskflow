@@ -1,3 +1,7 @@
+"""
+Entrypoint for the Taskflow CLI
+"""
+
 import typer
 
 from taskflow.cli import bind_app

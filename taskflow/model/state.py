@@ -10,6 +10,10 @@ from taskflow.utils import format_bytes
 
 
 class SystemState:
+    """
+    Class for managing the local system's state
+    """
+
     __slots__ = ["memory_free_bytes", "gpu_memory_free_bytes", "gpu_available"]
 
     def __init__(self, gpu_available=True) -> None:
@@ -18,15 +22,24 @@ class SystemState:
         self.gpu_available = gpu_available
 
     def update(self):
+        """
+        Update the state by running OS queries
+        """
         self._update_free_memory()
         if self.gpu_available:
             self._update_gpu_free_memory()
 
     def _update_free_memory(self):
+        """
+        Update the amount of available memory
+        """
         svmem = psutil.virtual_memory()
         self.memory_free_bytes = svmem.available
 
     def _update_gpu_free_memory(self):
+        """
+        Update the amount of available GPU memory
+        """
         device_count = nvmlDeviceGetCount()
         for i in range(device_count):
             handle = nvmlDeviceGetHandleByIndex(i)
@@ -34,12 +47,23 @@ class SystemState:
 
 
 class SystemStateUpdateCoroutine:
+    """
+    Class encapsulating a system state loop
+
+    :param state: The state to continually update
+    :param interval_s: Time in seconds between each update
+    """
+
     def __init__(self, state: SystemState, interval_s: float = 5) -> None:
         self.state = state
         self.interval_s = interval_s
         self.__stop_signal = asyncio.Event()
 
     async def run(self):
+        """
+        Runs the update loop asynchronously
+        """
+        self.__stop_signal.clear()
         self.state.update()
 
         while True:
@@ -55,4 +79,7 @@ class SystemStateUpdateCoroutine:
             logger.debug(f"Free memory: {format_bytes(self.state.memory_free_bytes)}")
 
     def stop(self):
+        """
+        Stop the current loop
+        """
         self.__stop_signal.set()

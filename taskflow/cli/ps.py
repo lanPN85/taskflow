@@ -31,6 +31,10 @@ def ps(
         DisplayMode.TABLE, "-o", help="Set the display format", show_choices=True
     ),
 ):
+    """
+    Function for the `taskflow ps` command
+    """
+
     di.init()
     settings = di.settings()
     current_user = getpass.getuser()

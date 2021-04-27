@@ -27,7 +27,7 @@ def run(
     ),
     memory_usage=typer.Option(None, "-m", help="Memory usage (eg. 100M, 2G,...)"),
     init_delay_s: int = typer.Option(
-        60, "-d", "--delay", help="Startup time in seconds"
+        15, "-d", "--delay", help="Startup time in seconds"
     ),
     gpu_usage_strings: Optional[List[str]] = typer.Option(
         None,
@@ -39,6 +39,10 @@ def run(
         None, "-s", help="Path to file on which options will be saved"
     ),
 ):
+    """
+    Function for the `taskflow run` command
+    """
+
     di.init()
     current_user = getpass.getuser()
     new_task = None
