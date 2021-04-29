@@ -38,7 +38,7 @@ sudo systemctl enable --now taskflowd
 An AUR repository is available for Arch Linux users: https://aur.archlinux.org/packages/taskflow-git/
 
 ```bash
-git clone https://aur.archlinux.org/packages/taskflow-git
+git clone https://aur.archlinux.org/taskflow-git.git
 cd taskflow-git
 makepkg -si
 ```
