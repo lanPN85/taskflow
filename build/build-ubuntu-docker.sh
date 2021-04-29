@@ -16,4 +16,3 @@ build () {
 }
 
 build "ubuntu:18.04" "ubuntu-18.04"
-build "ubuntu:20.04" "ubuntu-20.04"

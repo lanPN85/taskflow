@@ -5,14 +5,14 @@ set -eu
 DISTRO=${DISTRIB_ID}-${DISTRIB_RELEASE}
 
 make -B build
-rm -rf ./dist/${DISTRO} || true
+rm -rf ./dist/ubuntu || true
 
 debuild -us -uc
 
-mkdir -p ./dist/${DISTRO}
+mkdir -p ./dist/ubuntu
 
 cp ../taskflow*.deb \
     ../taskflow*.changes \
     ../taskflow*.tar.xz \
     ../taskflow*.dsc \
-    ./dist/${DISTRO}
+    ./dist/ubuntu

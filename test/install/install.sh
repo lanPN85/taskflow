@@ -23,5 +23,5 @@ if OS=="Debian"; then
     . /etc/lsb-release
     DISTRO=${DISTRIB_ID}-${DISTRIB_RELEASE}
 
-    dpkg -i dist/${DISTRO}/*.deb
+    dpkg -i dist/ubuntu/*.deb
 fi
