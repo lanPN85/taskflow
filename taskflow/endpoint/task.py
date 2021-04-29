@@ -101,3 +101,5 @@ async def handle_task(
     if task is not None:
         logger.info(f"Task {task.id} finished")
         await db.delete_task(task)
+
+    del task
