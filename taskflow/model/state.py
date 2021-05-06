@@ -77,8 +77,8 @@ class SystemStateUpdateCoroutine:
 
             self.state.update()
             # logger.debug(f"Free memory: {format_bytes(self.state.memory_free_bytes)}")
-            used_mem_bytes = psutil.Process(os.getpid()).memory_info().rss
-            logger.debug(f"Used memory; {format_bytes(used_mem_bytes)}")
+            # used_mem_bytes = psutil.Process(os.getpid()).memory_info().rss
+            # logger.debug(f"Used memory; {format_bytes(used_mem_bytes)}")
 
     def stop(self):
         """

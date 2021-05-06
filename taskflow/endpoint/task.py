@@ -1,6 +1,13 @@
 from taskflow.utils import get_timestamp_ms
 from typing import Optional
-from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect, Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    WebSocket,
+    WebSocketDisconnect,
+    Query,
+    HTTPException,
+)
 from loguru import logger
 from websockets.exceptions import ConnectionClosed
 
@@ -27,6 +34,18 @@ async def search_tasks(
     return await db.search_tasks(
         created_by=created_by, is_running=is_running, start=start, size=size
     )
+
+
+@router.get("/id/{task_id}", response_model=Task)
+async def get_task_by_id(task_id: str, db: ITaskflowDb = Depends(di.db)):
+    """
+    Endpoint for getting a single task by its id
+    """
+    task = await db.get_task_by_id(task_id)
+
+    if task is None:
+        raise HTTPException(404, detail="TASK_NOT_FOUND")
+    return task
 
 
 @router.websocket("/start")
@@ -87,6 +106,10 @@ async def handle_task(
                 message = SocketMessage.parse_obj(data)
                 if message.type == MessageType.TASK_FINISH:
                     can_finish = True
+                elif message.type == MessageType.TASK_UPDATE:
+                    task = Task.parse_obj(message.data)
+                    logger.debug(task.json())
+                    await db.update_task(task)
             except ValueError:
                 logger.warning("Invalid JSON data")
 

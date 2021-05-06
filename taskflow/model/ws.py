@@ -11,6 +11,7 @@ class MessageType(IntEnum):
     TASK_CAN_START = 1
     INFO_UPDATE = 2
     TASK_FINISH = 3
+    TASK_UPDATE = 4
 
 
 class SocketMessage(BaseModel):

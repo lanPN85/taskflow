@@ -46,7 +46,9 @@ class Task(BaseModel):
     usage: TaskResourceUsage
     started_at: Optional[int] = None
     is_running: bool = False
-    init_delay_s: int = 5
+    init_delay_s: int = 15
+    pid: Optional[int] = None
+    cwd: Optional[str] = None
 
 
 class TaskList(BaseModel):

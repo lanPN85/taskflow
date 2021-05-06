@@ -77,7 +77,7 @@ Taskflow can be configured by editing `/etc/taskflow/settings.yml`. The Taskflow
 ### Usage notes
 Taskflow does not check whether a task actually uses the resources it asks for, meaning you can be give a rough estimate of how much resource a task need to not fail.
 
-After starting a task, Taskflow has a default timeout of 60 seconds before another task can be scheduled. This is to make sure the previous task has locked up all needed resource before starting the next one. You can change this value using the `-d` option of `taskflow run`.
+After starting a task, Taskflow has a default timeout of 15 seconds before another task can be scheduled. This is to make sure the previous task has locked up all needed resource before starting the next one. You can change this value using the `-d` option of `taskflow run`.
 
 Refer to `taskflow --help` for detailed documentation of available commands.
 

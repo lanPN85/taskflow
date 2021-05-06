@@ -10,6 +10,7 @@ class TaskflowSettings(BaseModel):
     Class containing Taskflow's global settings
     """
 
+    default_init_delay: int = 15
     task_retention_days: int = 30
     api_host: str = "127.0.0.1"
     api_port: int = 4305

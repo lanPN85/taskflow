@@ -3,7 +3,7 @@ import humanfriendly as hf
 
 from typing import Optional
 from py3nvml.py3nvml import NVMLError, nvmlInit
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 def get_timestamp_ms() -> int:
@@ -85,3 +85,11 @@ def format_timedelta(t: timedelta) -> str:
     secs = int(rem % 60)
 
     return f"{hours:02d}:{mins:02d}:{secs:02d}"
+
+
+def format_int_timestamp(t: Optional[int]) -> str:
+    return (
+        datetime.fromtimestamp(t / 1000).strftime("%Y-%m-%d, %H:%M:%S")
+        if t is not None
+        else "N/A"
+    )

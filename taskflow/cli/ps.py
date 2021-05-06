@@ -11,7 +11,7 @@ from datetime import timedelta, datetime
 
 from taskflow import di
 from taskflow.model.task import NewTask, Task, TaskList, TaskPriority, TaskResourceUsage
-from taskflow.utils import get_timestamp_ms, format_bytes
+from taskflow.utils import format_int_timestamp, get_timestamp_ms, format_bytes
 
 
 class DisplayMode(str, Enum):
@@ -78,6 +78,10 @@ def ps(
         typer.secho("Cannot connect to daemon. Is taskflowd running?", fg="red")
         raise typer.Exit(10)
 
+    typer.secho(
+        "For more detailed info on tasks, use `taskflow show <task-id>`", fg="yellow"
+    )
+
 
 def print_task_pipe(task_list: TaskList):
     for task in task_list.tasks:
@@ -92,13 +96,13 @@ def print_task_table(task_list: TaskList, abbrev=True):
     tasks = task_list.tasks
 
     if abbrev:
-        headers = ["ID", "Command", "Created at", "Status"]
+        headers = ["ID", "PID", "Command", "Status"]
     else:
         headers = [
             "ID",
+            "PID",
             "Command",
             "Created by",
-            "Created at",
             "Priority",
             "Delay",
             "Status",
@@ -110,17 +114,23 @@ def print_task_table(task_list: TaskList, abbrev=True):
         if len(cmd) > 10:
             cmd = cmd[:10] + "..."
 
-        created_at_dt = datetime.fromtimestamp(task.created_at / 1000)
-        created_at = created_at_dt.strftime("%Y-%m-%d, %H:%M:%S")
         priority = task.priority.name
         delay = str(task.init_delay_s) + "s"
         status = "PENDING" if not task.is_running else "RUNNING"
 
         if abbrev:
-            rows.append([task.id, cmd, created_at, status])
+            rows.append([task.id, task.pid or "N/A", cmd, status])
         else:
             rows.append(
-                [task.id, cmd, task.created_by, created_at, priority, delay, status]
+                [
+                    task.id,
+                    task.pid or "N/A",
+                    cmd,
+                    task.created_by,
+                    priority,
+                    delay,
+                    status,
+                ]
             )
 
     typer.echo(tabulate.tabulate(rows, headers=headers))

@@ -26,8 +26,11 @@ def run(
         "100", "-p", help="Task priority (0=LOW, 100=MEDIUM, 200=HIGH)"
     ),
     memory_usage=typer.Option(None, "-m", help="Memory usage (eg. 100M, 2G,...)"),
-    init_delay_s: int = typer.Option(
-        15, "-d", "--delay", help="Startup time in seconds"
+    init_delay_s: Optional[int] = typer.Option(
+        None,
+        "-d",
+        "--delay",
+        help="Startup time in seconds. Defaults to the config file value",
     ),
     gpu_usage_strings: Optional[List[str]] = typer.Option(
         None,
@@ -46,6 +49,8 @@ def run(
     di.init()
     current_user = getpass.getuser()
     new_task = None
+
+    m_init_delay_s = init_delay_s or di.settings().default_init_delay
 
     cmd_str = " ".join(cmd)
 
@@ -69,7 +74,7 @@ def run(
             cmd=cmd_str,
             created_by=current_user,
             priority=priority,
-            init_delay_s=init_delay_s,
+            init_delay_s=m_init_delay_s,
             usage=TaskResourceUsage(
                 memory_bytes=memory_usage, gpu_memory_bytes=gpu_memory_usage
             ),
@@ -149,6 +154,15 @@ async def start_proc(new_task: NewTask, port: int):
                 typer.secho("Starting task...", fg="green")
 
                 p = Popen(task.cmd, shell=True, env=os.environ)
+
+                # Update task info
+                task.cwd = os.getcwd()
+                task.pid = p.pid
+                task.started_at = get_timestamp_ms()
+                message = SocketMessage(type=MessageType.TASK_UPDATE, data=task)
+                task.is_running = True
+                await ws.send(message.json())
+
                 status = None
                 try:
                     while True:
