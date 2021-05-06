@@ -40,8 +40,8 @@ class InMemoryDb(ITaskflowDb):
 
     async def get_task_by_id(self, id: str) -> Optional[Task]:
         try:
-            return self.__tasks.by.id[id]
-        except KeyError:
+            return self.__tasks.where(id=id)[0]
+        except IndexError:
             return None
 
     async def get_pending_tasks_count(self) -> int:
