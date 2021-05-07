@@ -73,6 +73,7 @@ def print_task(task: Task):
     typer.echo(f"GPU usage: {gpu_usage_str}")
     typer.echo()
 
+    typer.echo(f"Task delay: {delay}")
     typer.echo(f"Status: {status}")
     typer.echo(f"Priority: {priority}")
     typer.echo(f"Created by: {task.created_by}")
