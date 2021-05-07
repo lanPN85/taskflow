@@ -29,8 +29,8 @@ Taskflow is NOT a distributed task runner. There is no virtualization layer, tas
 Debian packages are available for Ubuntu 18.04 and above
 
 ```bash
-wget https://github.com/lanPN85/taskflow/releases/download/0.2.0/taskflow_0.2.0_amd64.deb
-sudo dpkg -i taskflow_0.2.0_amd64.deb
+wget https://github.com/lanPN85/taskflow/releases/download/0.3.0/taskflow_0.3.0_amd64.deb
+sudo dpkg -i taskflow_0.3.0_amd64.deb
 sudo systemctl enable --now taskflowd
 ```
 
@@ -70,6 +70,9 @@ All environment settings in the shell (eg. virtualenv, conda, etc...) are preser
 
 ### View current tasks
 You can view tasks managed by Taskflow using `taskflow ps`
+
+### Detailed task info
+Detailed info for a specific task can be viewed using `taskflow show <task-id>`
 
 ### Configuration
 Taskflow can be configured by editing `/etc/taskflow/settings.yml`. The Taskflow daemon should be restarted for changes to take effect. For systemd, the restart command would be `sudo systemctl restart taskflowd`.
