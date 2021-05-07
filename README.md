@@ -78,7 +78,7 @@ Detailed info for a specific task can be viewed using `taskflow show <task-id>`
 Taskflow can be configured by editing `/etc/taskflow/settings.yml`. The Taskflow daemon should be restarted for changes to take effect. For systemd, the restart command would be `sudo systemctl restart taskflowd`.
 
 ### Usage notes
-Taskflow does not check whether a task actually uses the resources it asks for, meaning you can be give a rough estimate of how much resource a task need to not fail.
+Taskflow does not check whether a task actually uses the resources it asks for, meaning you only need to specify a rough estimate of how much resource a task need to not fail.
 
 After starting a task, Taskflow has a default timeout of 15 seconds before another task can be scheduled. This is to make sure the previous task has locked up all needed resource before starting the next one. You can change this value using the `-d` option of `taskflow run`.
 
