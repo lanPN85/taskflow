@@ -1,8 +1,6 @@
-taskflow (0.3.0) unstable; urgency=medium
+taskflow (0.3.1) unstable; urgency=medium
 
-  * 0.3.0 Release
-  * Add the default_init_delay config option
-  * Add the taskflow show command
-  * Add process ID and current working directory info to tasks
+  * 0.3.1 Release
+  * Add PID and working directory for pending tasks
 
- -- Lan Phan <phan.ngoclan58@gmail.com>  Fri, 7 May 2021 09:14:07 +0700
+ -- Lan Phan <phan.ngoclan58@gmail.com>  Mon, 10 May 2021 10:34:07 +0700

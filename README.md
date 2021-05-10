@@ -3,11 +3,10 @@
 </p>
 
 # Taskflow: Share system resources without breaking a sweat
-![version](https://img.shields.io/badge/version-0.1.0-blue)
+![version](https://img.shields.io/badge/version-0.3.0-blue)
 ![license](https://img.shields.io/github/license/lanPN85/taskflow)
 
 Taskflow is a UNIX utility that allows users to schedule arbitrary tasks to run when the system has enough resources available.
-
 
 - [Why Taskflow](#why-taskflow)
 - [Installation](#installation)
@@ -20,7 +19,7 @@ Taskflow is best explained with an example. Let's say 3 users, Alice, Bob and Ch
 
 If you ever find yourself in Bob and Chuck's situation, Taskflow may be able to help you :)
 
-I wrote Taskflow because I found myself constantly checking the lab workstation to run my GPU tasks. Taskflow is dead simple. It simply delays the execution of whatever command passed to it until it's appropriate to start. It features a simple scheduler so multiple tasks can be queued up at the same time. If you want something to run and there's no resource for it yet, just schedule it with Taskflow!
+I wrote Taskflow because I found myself constantly checking the lab workstation to run my GPU tasks. Taskflow is dead simple. It delays the execution of whatever command passed to it until it's appropriate to start. It features a simple scheduler so multiple tasks can be queued up at the same time. If you want something to run and there's no resource for it yet, just schedule it with Taskflow!
 
 Taskflow is NOT a distributed task runner. There is no virtualization layer, tasks are executed in the same shell with the same environment. This means you can put `taskflow run` before any command or workflow you currently have, no change required.
 

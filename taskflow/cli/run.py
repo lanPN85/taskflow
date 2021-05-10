@@ -78,6 +78,8 @@ def run(
             usage=TaskResourceUsage(
                 memory_bytes=memory_usage, gpu_memory_bytes=gpu_memory_usage
             ),
+            pid=os.getpid(),
+            cwd=os.getcwd(),
         )
     else:
         # Parse from file
@@ -156,7 +158,6 @@ async def start_proc(new_task: NewTask, port: int):
                 p = Popen(task.cmd, shell=True, env=os.environ)
 
                 # Update task info
-                task.cwd = os.getcwd()
                 task.pid = p.pid
                 task.started_at = get_timestamp_ms()
                 message = SocketMessage(type=MessageType.TASK_UPDATE, data=task)

@@ -62,6 +62,8 @@ class NewTask(BaseModel):
     priority: TaskPriority
     usage: TaskResourceUsage
     init_delay_s: int = 5
+    pid: Optional[int] = None
+    cwd: Optional[str] = None
 
     @staticmethod
     def generate_id() -> str:
@@ -76,4 +78,6 @@ class NewTask(BaseModel):
             priority=self.priority,
             usage=self.usage,
             init_delay_s=self.init_delay_s,
+            pid=self.pid,
+            cwd=self.cwd,
         )
