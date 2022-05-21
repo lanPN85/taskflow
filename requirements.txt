@@ -1,10 +1,10 @@
 py3nvml==0.2.6
-fastapi[all]==0.63
+fastapi[all]==0.78
 psutil==5.8.0
 loguru==0.5.3
 littletable==1.4.1
 typer==0.3.2
-websockets==8.1
+websockets==10.3
 colorama==0.4.4
 humanfriendly==9.1
 requests==2.25.1

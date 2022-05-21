@@ -32,7 +32,7 @@ def ps(
     ),
 ):
     """
-    Function for the `taskflow ps` command
+    Shows current pending and active tasks
     """
 
     di.init()

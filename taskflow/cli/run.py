@@ -43,7 +43,7 @@ def run(
     ),
 ):
     """
-    Function for the `taskflow run` command
+    Adds a task to the execution queue
     """
 
     di.init()

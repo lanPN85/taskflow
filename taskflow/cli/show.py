@@ -16,7 +16,7 @@ from taskflow.utils import format_int_timestamp, get_timestamp_ms, format_bytes
 
 def show(task_id: str):
     """
-    Function for taskflow show
+    Shows detailed information for a task
     """
     di.init()
     settings = di.settings()
