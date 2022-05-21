@@ -111,13 +111,13 @@ async def handle_task(
                     logger.debug(task.json())
                     await db.update_task(task)
             except ValueError:
-                logger.warning("Invalid JSON data")
+                logger.exception("Invalid JSON data")
 
         await websocket.close()
     except (WebSocketDisconnect, ConnectionClosed):
         logger.warning("Socket disconnected")
     except Exception as e:
-        logger.exception("", e)
+        logger.exception("Unknown error", e)
         await websocket.close()
 
     # Cleanup

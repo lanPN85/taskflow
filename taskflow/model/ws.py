@@ -12,6 +12,7 @@ class MessageType(IntEnum):
     INFO_UPDATE = 2
     TASK_FINISH = 3
     TASK_UPDATE = 4
+    PING = 5
 
 
 class SocketMessage(BaseModel):
