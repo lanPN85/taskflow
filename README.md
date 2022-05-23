@@ -1,9 +1,9 @@
-<p align="center">
+                                                                          <p align="center">
     <img src="images/taskflow.png" alt="logo" height="100px"/>
 </p>
 
 # Taskflow: Share system resources without breaking a sweat
-![version](https://img.shields.io/badge/version-0.3.1-blue)
+![version](https://img.shields.io/badge/version-0.4.0-blue)
 ![license](https://img.shields.io/github/license/lanPN85/taskflow)
 
 Taskflow is a UNIX utility that allows users to schedule arbitrary tasks to run when the system has enough resources available.
@@ -28,8 +28,8 @@ Taskflow is NOT a distributed task runner. There is no virtualization layer, tas
 Debian packages are available for Ubuntu 18.04 and above
 
 ```bash
-wget https://github.com/lanPN85/taskflow/releases/download/0.3.1/taskflow_0.3.1_amd64.deb
-sudo dpkg -i taskflow_0.3.1_amd64.deb
+wget https://github.com/lanPN85/taskflow/releases/download/0.4.0/taskflow_0.4.0_amd64.deb
+sudo dpkg -i taskflow_0.4.0_amd64.deb
 sudo systemctl enable --now taskflowd
 ```
 

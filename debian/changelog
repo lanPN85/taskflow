@@ -1,4 +1,8 @@
-taskflow (0.3.1) unstable; urgency=medium
+taskflow (0.4.0) unstable; urgency=medium
+
+  * 0.4.0 Release
+  * More detailed subcommand description
+  * Add PING message to WebSocket stream
 
   * 0.3.1 Release
   * Add PID and working directory for pending tasks
