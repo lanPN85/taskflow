@@ -1,5 +1,5 @@
-                                                                          <p align="center">
-    <img src="images/taskflow.png" alt="logo" height="100px"/>
+<p align="center">
+<img src="images/taskflow.png" alt="logo" height="100px"/>
 </p>
 
 # Taskflow: Share system resources without breaking a sweat
